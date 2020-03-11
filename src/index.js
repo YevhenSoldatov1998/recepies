@@ -4,9 +4,13 @@ const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
 const todoLists = require('./router/todoLists-controller');
+require('dotenv').config();
 
 // var
-const port = 3001;
+let port = process.env.PORT;
+if (port == null || port == "") {
+    port = 3001;
+}
 const mongoDB = 'mongodb://127.0.0.1/Yevhen';
 
 app.use(cors());
@@ -15,7 +19,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json())
 
-mongoose.connect(mongoDB, {useNewUrlParser: true})
+mongoose.connect(process.env.MONGODB_URI || mongoDB, {useNewUrlParser: true})
     .then(() => console.log(`DB connection successful! DB: ${mongoDB}`))
     .catch((e) => console.error(`DB connection failed \n Error: ${e}`));
 
