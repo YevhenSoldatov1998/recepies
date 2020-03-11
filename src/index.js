@@ -25,5 +25,8 @@ mongoose.connect(process.env.MONGODB_URI || mongoDB, {useNewUrlParser: true})
 
 // routes
 app.use('/todo-lists', todoLists);
+app.get('/test', (req, res) => {
+    res.send('test')
+});
 
 app.listen(port, () => console.log(`listening port: ${port}`));
