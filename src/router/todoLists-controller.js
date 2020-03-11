@@ -6,9 +6,14 @@ const repTasks = require('./repository/repository-tasks')
 router.get('/', async (req, res) => {
     try {
         const todoLists = await dal.getTodoLists();
-        res.status(200).send({
-            items: todoLists
-        })
+        if(todoLists.length > 0){
+            res.status(200).send({
+                items: todoLists
+            })
+        }
+        else {
+            res.send('todolists is empty')
+        }
     } catch (e) {
         res.status(404).send({
             message: e
