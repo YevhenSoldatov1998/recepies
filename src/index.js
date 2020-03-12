@@ -19,7 +19,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json())
 
-mongoose.connect(process.env.MONGODB_URI || mongoDB, {useNewUrlParser: true})
+mongoose.connect(process.env.MONGODB_URI|| mongoDB, {useNewUrlParser: true})
     .then(() => console.log(`DB connection successful! DB: ${mongoDB}`))
     .catch((e) => console.error(`DB connection failed \n Error: ${e}`));
 
