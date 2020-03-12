@@ -8,6 +8,7 @@ require('dotenv').config();
 
 // var
 let port = process.env.PORT;
+console.log(process.env.PORT)
 if (port == null || port == "") {
     port = 3001;
 }
@@ -18,8 +19,8 @@ app.use(cors());
 //Setting mongoDB
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json())
-
-mongoose.connect(process.env.MONGODB_URI|| mongoDB, {useNewUrlParser: true})
+console.log(process.env.MONGOLAB_GRAY_URI)
+mongoose.connect(process.env.MONGOLAB_GRAY_URI|| mongoDB, {useNewUrlParser: true})
     .then(() => console.log(`DB connection successful! DB: ${mongoDB}`))
     .catch((e) => console.error(`DB connection failed \n Error: ${e}`));
 
