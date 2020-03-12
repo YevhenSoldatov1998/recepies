@@ -7,22 +7,21 @@ const todoLists = require('./router/todoLists-controller');
 require('dotenv').config();
 
 // var
-let port = process.env.PORT;
-console.log(process.env.PORT)
-if (port == null || port == "") {
-    port = 3001;
-}
-const mongoDB = 'mongodb://127.0.0.1/Yevhen';
+const port = process.env.PORT || 3001;
+console.log(port)
 
 app.use(cors());
 
 //Setting mongoDB
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json())
-console.log(process.env.MONGOLAB_GRAY_URI)
-mongoose.connect(process.env.MONGOLAB_GRAY_URI|| mongoDB, {useNewUrlParser: true})
-    .then(() => console.log(`DB connection successful! DB: ${mongoDB}`))
+mongoose.connect('mongodb://heroku_gl1hbr34:ulvpb0hjd5f695aqie1h99ui3t@ds055565.mlab.com:55565/heroku_gl1hbr34',
+    {useUnifiedTopology: true, useNewUrlParser: true,})
+    .then((e) => {
+        debugger
+        console.log(`DB connection successful! DB: ${e}`)})
     .catch((e) => console.error(`DB connection failed \n Error: ${e}`));
+
 
 // routes
 app.use('/todo-lists', todoLists);
