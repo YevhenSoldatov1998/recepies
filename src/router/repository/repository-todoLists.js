@@ -7,6 +7,8 @@ const todoLists = new mongoose.Schema({
 });
 const TodoLists = mongoose.model('todolists', todoLists);
 const getTodoLists = async () => {
+    const todoListsSave = new TodoLists({title: 'fdfdf', order: 0});
+    await todoListsSave.save();
     const todoLists = await TodoLists.find();
     return todoLists
 }
