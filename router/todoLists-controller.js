@@ -4,6 +4,7 @@ const dal = require('./repository/repository-todoLists');
 const repTasks = require('./repository/repository-tasks')
 // todoLists
 router.get('/', async (req, res) => {
+
     try {
         const todoLists = await dal.getTodoLists();
         if(todoLists.length > 0){
