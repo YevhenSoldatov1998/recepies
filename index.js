@@ -1,32 +1,79 @@
+const dotenv = require('dotenv');
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const app = express();
+const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
-const todoLists = require('./router/todoLists-controller');
-require('dotenv').config();
+const Recipe = require("./schema/recipe");
+const Category = require("./schema/category");
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+const jsonParser = bodyParser.json()
+const urlencodedParser = bodyParser.urlencoded({extended: false})
+dotenv.config()
 
-// var
-const port = process.env.PORT || 3001;
-console.log(port)
+const PORT = process.env.PORT
 
-app.use(cors());
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
 
-//Setting mongoDB
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json())
-mongoose.connect('mongodb://heroku_gl1hbr34:ulvpb0hjd5f695aqie1h99ui3t@ds055565.mlab.com:55565/heroku_gl1hbr34',
-    {useUnifiedTopology: true, useNewUrlParser: true,})
-    .then((e) => {
-        debugger
-        console.log(`DB connection successful! DB: ${e}`)})
-    .catch((e) => console.error(`DB connection failed \n Error: ${e}`));
+// Получение объекта подключения
+const db = mongoose.connection;
 
-
-// routes
-app.use('/todo-lists', todoLists);
-app.get('/test', (req, res) => {
-    res.send('test')
+// Обработка событий подключения
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  // Успешное подключение
+  console.log("Successfully connected to MongoDB database");
 });
 
-app.listen(port, () => console.log(`listening port: ${port}`));
+app.post('/categories', async (req, res) => {
+  try {
+    const category = new Category({
+      name: req.body.name,
+    });
+    await category.save();
+    res.status(201).json(category);
+  } catch (err) {
+    res.status(400).json({message: err.message});
+  }
+});
+app.get('/recipes/:categoryId', async (req, res) => {
+  try {
+    const categoryId = req.params.categoryId;
+    const recipes = await Recipe.find({category: categoryId});
+    res.json(recipes);
+  } catch (err) {
+    res.status(500).json({message: err.message});
+  }
+});
+app.post('/recipes', jsonParser, async (req, res) => {
+  try {
+    const recipe = new Recipe({
+      title: req.body.title,
+      description: req.body.description,
+      ingredients: req.body.ingredients,
+      category: req.body.category
+    });
+
+    await recipe.save();
+    res.status(201).send(recipe);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({error: 'Error creating recipe'});
+  }
+});
+app.get('/categories', async (req, res) => {
+  try {
+    const categories = await Category.find().select('name');
+    res.json(categories);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({error: 'Error getting categories'});
+  }
+});
+
+app.listen(PORT, () => {
+  console.log('started application on port %d', PORT)
+})
