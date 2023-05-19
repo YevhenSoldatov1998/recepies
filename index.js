@@ -1,10 +1,14 @@
 const dotenv = require('dotenv');
 const express = require('express');
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const mongoose = require('mongoose');
 const Recipe = require("./schema/recipe");
 const Category = require("./schema/category");
 const app = express();
+app.use(cors({
+  origin: 'https://recipes-teal-ten.vercel.app/'
+}))
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 const jsonParser = bodyParser.json()
